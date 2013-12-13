@@ -27,9 +27,13 @@
     box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
 }
 
-.pika-title {
+.pika-title, .pika-footer {
     position: relative;
     text-align: center;
+}
+
+.pika-footer {
+    margin: 5px auto 0;
 }
 
 .pika-label {
@@ -45,6 +49,8 @@
     font-weight: bold;
     background-color: #fff;
 }
+
+.pika-footer select,
 .pika-title select {
     cursor: pointer;
     position: absolute;
@@ -168,8 +174,4 @@
     background: #ff8000 !important;
     box-shadow: none !important;
     border-radius: 3px !important;
-}
-
-.pika-time {
-    margin: 5px auto 0;
 }
