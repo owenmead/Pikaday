@@ -341,19 +341,10 @@
         return '<table cellpadding="0" cellspacing="0" class="pika-table">' + renderHead(opts) + renderBody(data) + '</table>';
     },
 
-    renderTimePicker = function(num_options, selected_val, select_class, display_func) {
-        var to_return = '<td><select class="pika-select '+select_class+'">';
-        for (var i=0; i<num_options; i++) {
-            to_return += '<option value="'+i+'" '+(i==selected_val ? 'selected' : '')+'>'+display_func(i)+'</option>'
-        }
-        to_return += '</select></td>';
-        return to_return;
-    },
-
-    renderTime = function(hh, mm, ss, use24hour, showSeconds)
+    renderFooter = function(hh, mm, ss, use24hour, showSeconds)
     {
-        var to_return = '<table cellpadding="0" cellspacing="0" class="pika-time"><tbody><tr>' +
-            renderTimePicker(24, hh, 'pika-select-hour', function(i) {
+        var to_return = '<div class="pika-footer">' +
+            renderTime(24, hh, 'pika-select-hour', function(i) {
                 if (use24hour) {
                     return i;
                 } else {
@@ -367,17 +358,24 @@
                     }
                 }
             }) +
-            '<td>:</td>' +
-            renderTimePicker(60, mm, 'pika-select-minute', function(i) { if (i < 10) return "0" + i; return i });
+            '<div class="pika-label pika-label-divider">:</div>' +
+            renderTime(60, mm, 'pika-select-minute', function(i) { if (i < 10) return "0" + i; return i });
 
         if (showSeconds) {
-            to_return += '<td>:</td>' +
-                renderTimePicker(60, ss, 'pika-select-second', function(i) { if (i < 10) return "0" + i; return i });
+            to_return += '<div class="pika-label pika-label-divider">:</div>' +
+                renderTime(60, ss, 'pika-select-second', function(i) { if (i < 10) return "0" + i; return i });
         }
-        return to_return + '</tr></tbody></table>';
+        return to_return + '</div>';
     },
 
-
+    renderTime = function(num_options, selected_val, select_class, display_func) {
+        var to_return = '<div class="pika-label"> '+ display_func(selected_val) +' <select class="pika-select '+select_class+'">';
+        for (var i=0; i<num_options; i++) {
+            to_return += '<option value="'+i+'" '+(i==selected_val ? 'selected' : '')+'>'+display_func(i)+'</option>'
+        }
+        to_return += '</select></div>';
+        return to_return;
+    },
 
     /**
      * Pikaday constructor
@@ -832,7 +830,7 @@
 
             this.el.innerHTML = renderTitle(this) + this.render(this._y, this._m);
             if (opts.showTime) {
-                this.el.innerHTML += renderTime(this._hh, this._mm, this._ss, this._o.use24hour, this._o.showSeconds);
+                this.el.innerHTML += renderFooter(this._hh, this._mm, this._ss, this._o.use24hour, this._o.showSeconds);
             }
 
             if (opts.bound) {
