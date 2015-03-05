@@ -933,8 +933,10 @@
          */
         setMinDate: function(value)
         {
-            if (!this._o.showTime) setToStartOfDay(this._o.minDate);
-                                   setToStartOfDay(value);
+            if (!this._o.showTime) {
+              setToStartOfDay(this._o.minDate);
+              setToStartOfDay(value);
+            }
             this._o.minDate = value;
             this._o.minYear  = value.getFullYear();
             this._o.minMonth = value.getMonth();
