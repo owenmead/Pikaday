@@ -247,6 +247,7 @@
         hourStep: 1,
         minuteStep: 1,
         secondStep: 1,
+        defaultTime: '00:00:00',
 
         // when numberOfMonths is used, this will help you to choose where the main calendar will be (default `left`, can be set to `right`)
         // only used for the first display or when a selected date is not visible
@@ -263,7 +264,10 @@
             weekdays      : ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
             weekdaysShort : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
             midnight      : 'Midnight',
-            noon          : 'Noon'
+            noon          : 'Noon',
+            hourPlaceholder     : 'Hour',
+            minutePlaceholder   : 'Min',
+            secondPlaceholder   : 'Sec'
         },
 
         // Theme Classname
@@ -405,10 +409,15 @@
         return '<table cellpadding="0" cellspacing="0" class="pika-table">' + renderHead(opts) + renderBody(data) + '</table>';
     },
 
-    renderTimePicker = function(num_options, selected_val, select_class, display_func, opts) {
-        var to_return = '<td><select class="pika-select '+select_class+'">';
+    renderTimePicker = function(num_options, selected_val, role, display_func, opts) {
+        var to_return = '<td><select class="pika-select pika-select-'+role+'">';
+        if ( selected_val === null )
+            to_return += '<option value="" class="placeholder" disabled="disabled" selected="selected">'
+                + opts.i18n[role + 'Placeholder'] + '</option>';
         for (var i=0; i<num_options; i+=opts.step) {
-            to_return += '<option value="'+i+'" '+(i==selected_val ? 'selected' : '')+'>'+display_func(i)+'</option>';
+            if ( selected_val !== null && selected_val < i && selected_val > ( i - opts.step ) )
+                to_return += '<option value="'+selected_val+'" selected>'+display_func(selected_val)+'</option>';
+            to_return += '<option value="'+i+'" '+(i===selected_val ? 'selected' : '')+'>'+display_func(i)+'</option>';
         }
         to_return += '</select></td>';
         return to_return;
@@ -417,7 +426,7 @@
     renderTime = function(hh, mm, ss, opts)
     {
         var to_return = '<table cellpadding="0" cellspacing="0" class="pika-time"><tbody><tr>' +
-            renderTimePicker(24, hh, 'pika-select-hour', function(i) {
+            renderTimePicker(24, hh, 'hour', function(i) {
                 if (opts.use24hour) {
                     return i;
                 } else {
@@ -432,11 +441,11 @@
                 }
             }, extend({step: opts.hourStep}, opts, false)) +
             '<td>:</td>' +
-            renderTimePicker(60, mm, 'pika-select-minute', function(i) { if (i < 10) return "0" + i; return i }, extend({step: opts.minuteStep}, opts, false));
+            renderTimePicker(60, mm, 'minute', function(i) { if (i < 10) return "0" + i; return i }, extend({step: opts.minuteStep}, opts, false));
 
         if (opts.showSeconds) {
             to_return += '<td>:</td>' +
-                renderTimePicker(60, ss, 'pika-select-second', function(i) { if (i < 10) return "0" + i; return i }, extend({step: opts.secondStep}, opts, false));
+                renderTimePicker(60, ss, 'second', function(i) { if (i < 10) return "0" + i; return i }, extend({step: opts.secondStep}, opts, false));
         }
         return to_return + '</tr></tbody></table>';
     },
@@ -779,8 +788,21 @@
          */
         setTime: function(hours, minutes, seconds) {
             if (!this._d) {
+                var that = this;
+                var selval = function(class_) {
+                    var ret = that.el.getElementsByClassName(class_).item(0);
+                    if ( !! ret )
+                        return ret.value;
+                    return null;
+                };
                 this._d = new Date();
-                this._d.setHours(0,0,0,0);
+                // default the time components to the h/m/s selects' values
+                // (in case they were set via options.defaultTime)
+                this._d.setHours(
+                    selval('pika-select-hour') || 0,
+                    selval('pika-select-minute') || 0,
+                    selval('pika-select-second') || 0,
+                    0);
             }
             if (hours) {
                 this._d.setHours(hours);
@@ -984,12 +1006,19 @@
             }
 
             if (opts.showTime) {
-                html += '<div class="pika-time-container">' +
-                        renderTime(
-                            this._d ? this._d.getHours() : 0,
-                            this._d ? this._d.getMinutes() : 0,
-                            this._d ? this._d.getSeconds() : 0,
-                            opts)
+                var vals = null;
+                if ( this._d )
+                    vals = [this._d.getHours(), this._d.getMinutes(), this._d.getSeconds()];
+                // else if ( opts.defaultTime !== false ) {
+                else if ( opts.defaultTime ) {
+                    vals = opts.defaultTime.split(':');
+                    for ( var idx=0 ; idx<vals.length ; idx++ ) {
+                        vals[idx] = parseInt(vals[idx]);
+                    }
+                } else
+                    vals = [null, null, null];
+                html += '<div class="pika-time-container">'
+                    + renderTime(vals[0], vals[1], vals[2], opts)
                     + '</div>';
             }
 
