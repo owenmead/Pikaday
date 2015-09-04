@@ -728,6 +728,11 @@
                 opts.inputFormats = opts.format;
             }
 
+            if (options.i18n) {
+                opts.i18n = extend({}, defaults.i18n);
+                opts.i18n = extend(opts.i18n, options.i18n, true);
+            }
+
             return opts;
         },
 
