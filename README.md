@@ -7,6 +7,10 @@ Pikaday - With Time Picker
 showTime: true
 showSeconds: false
 use24hour: false
+defaultTime: '00:00:00'
+hourStep: 1
+minuteStep: 1
+secondStep: 1
 ```
 
 ### Time support added to [dbushell/Pikaday][david Pika]
