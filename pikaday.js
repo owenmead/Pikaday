@@ -1006,17 +1006,19 @@
             }
 
             if (opts.showTime) {
-                var vals = null;
+                var vals = [null, null, null];
                 if ( this._d )
                     vals = [this._d.getHours(), this._d.getMinutes(), this._d.getSeconds()];
-                // else if ( opts.defaultTime !== false ) {
                 else if ( opts.defaultTime ) {
                     vals = opts.defaultTime.split(':');
-                    for ( var idx=0 ; idx<vals.length ; idx++ ) {
-                        vals[idx] = parseInt(vals[idx]);
+                    for ( var idx=0 ; idx<3 ; idx++ ) {
+                        try {
+                            vals[idx] = parseInt(vals[idx]);
+                        } catch(e) {
+                            vals[idx] = 0;
+                        }
                     }
-                } else
-                    vals = [null, null, null];
+                }
                 html += '<div class="pika-time-container">'
                     + renderTime(vals[0], vals[1], vals[2], opts)
                     + '</div>';
