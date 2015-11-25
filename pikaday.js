@@ -939,9 +939,9 @@
          */
         setMinDate: function(value)
         {
-            if (!this._o.showTime) setToStartOfDay(this._o.minDate);
-                                   setToStartOfDay(value);
             this._o.minDate = value;
+
+            if (!this._o.showTime) setToStartOfDay(this._o.minDate);
             this._o.minYear  = value.getFullYear();
             this._o.minMonth = value.getMonth();
             this.draw();
@@ -952,8 +952,9 @@
          */
         setMaxDate: function(value)
         {
-            setToStartOfDay(value);
             this._o.maxDate = value;
+
+            if (!this._o.showTime) setToStartOfDay(this._o.maxDate);
             this._o.maxYear = value.getFullYear();
             this._o.maxMonth = value.getMonth();
             this.draw();
