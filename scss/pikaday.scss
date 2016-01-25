@@ -197,3 +197,15 @@
     font-size: 11px;
     color: #999;
 }
+
+.pika-time {
+    margin: 7px auto 7px;
+
+    .pika-select-hour,
+    .pika-select-minute,
+    .pika-select-second {
+        width: 20px;
+        margin: 0 2px;
+        padding: 2px;
+    }
+}

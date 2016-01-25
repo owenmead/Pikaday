@@ -244,6 +244,7 @@
         showTime: true,
         showSeconds: false,
         use24hour: false,
+        useTimeInput: false,
 
         // when numberOfMonths is used, this will help you to choose where the main calendar will be (default `left`, can be set to `right`)
         // only used for the first display or when a selected date is not visible
@@ -402,19 +403,26 @@
         return '<table cellpadding="0" cellspacing="0" class="pika-table">' + renderHead(opts) + renderBody(data) + '</table>';
     },
 
-    renderTimePicker = function(num_options, selected_val, select_class, display_func) {
-        var to_return = '<td><select class="pika-select '+select_class+'">';
-        for (var i=0; i<num_options; i++) {
-            to_return += '<option value="'+i+'" '+(i==selected_val ? 'selected' : '')+'>'+display_func(i)+'</option>'
+    renderTimePicker = function(num_options, selected_val, select_class, opts, display_func) {
+        var to_return = '<td>';
+        if (opts.useTimeInput && opts.use24hour) {
+            to_return += '<input type="text" value="'+selected_val+'" class="pika-select '+select_class+'" min="0" max="'+num_options+'">';
+        } else {
+            to_return += '<select class="pika-select '+select_class+'">';
+            for (var i=0; i<num_options; i++) {
+                to_return += '<option value="'+i+'" '+(i==selected_val ? 'selected' : '')+'>'+display_func(i)+'</option>'
+            }
+            to_return += '</select>';
         }
-        to_return += '</select></td>';
+
+        to_return += '</td>';
         return to_return;
     },
 
     renderTime = function(hh, mm, ss, opts)
     {
         var to_return = '<table cellpadding="0" cellspacing="0" class="pika-time"><tbody><tr>' +
-            renderTimePicker(24, hh, 'pika-select-hour', function(i) {
+            renderTimePicker(24, hh, 'pika-select-hour', opts, function(i) {
                 if (opts.use24hour) {
                     return i;
                 } else {
@@ -429,11 +437,11 @@
                 }
             }) +
             '<td>:</td>' +
-            renderTimePicker(60, mm, 'pika-select-minute', function(i) { if (i < 10) return "0" + i; return i });
+            renderTimePicker(60, mm, 'pika-select-minute', opts, function(i) { if (i < 10) return "0" + i; return i });
 
         if (opts.showSeconds) {
             to_return += '<td>:</td>' +
-                renderTimePicker(60, ss, 'pika-select-second', function(i) { if (i < 10) return "0" + i; return i });
+                renderTimePicker(60, ss, 'pika-select-second', opts, function(i) { if (i < 10) return "0" + i; return i });
         }
         return to_return + '</tr></tbody></table>';
     },
@@ -515,9 +523,15 @@
                 self.gotoYear(target.value);
             }
             else if (hasClass(target, 'pika-select-hour')) {
+                if (isNaN(target.value)) {
+                    target.value = 0;
+                }
                 self.setTime(target.value);
             }
             else if (hasClass(target, 'pika-select-minute')) {
+                if (isNaN(target.value)) {
+                    target.value = 0;
+                }
                 self.setTime(null, target.value);
             }
             else if (hasClass(target, 'pika-select-second')) {
