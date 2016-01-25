@@ -199,6 +199,10 @@
     color: #999;
 }
 
+.pika-time-container {
+    clear: both;
+}
+
 .pika-time {
     margin: 7px auto 7px;
 }
