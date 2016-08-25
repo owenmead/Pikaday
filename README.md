@@ -21,6 +21,9 @@ This fork allows the user to specify the time along with their date. Done so by 
 * Will not change the currently selected date.
 * If no date is selected, will select today. Any of the arguments may be null, and will not affect the date.
 
+### Also includes a whole week selector for Pickaday taken from [leizhao4/Pikaday][leizhao4 Pika]
+
+use `pickWholeWeek` to select a whole week instead of a day (default `false`)
 
 ## Authors
 

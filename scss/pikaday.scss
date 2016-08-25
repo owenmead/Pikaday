@@ -223,6 +223,13 @@ $pd-font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !default;
     }
 }
 
+.pika-row.pick-whole-week:hover .pika-button {
+    color: $pd-day-hover-color;
+    background: $pd-day-hover-bg;
+    box-shadow: none;
+    border-radius: 3px;
+}
+
 .pika-week {
     font-size: 11px;
     color: $pd-week-color;
