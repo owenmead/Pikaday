@@ -810,7 +810,28 @@
          */
         toString: function(format)
         {
-            return !isDate(this._d) ? '' : hasMoment ? moment(this._d).format(format || this._o.format) : this._o.showTime ? this._d.toString() : this._d.toDateString();
+            if (this._o.pickWholeWeek && isDate(this._d)) {
+                let sunday = new Date(this._d.setDate(this._d.getDate() - this._d.getDay()));
+                let saturday = new Date(this._d.setDate(this._d.getDate() - this._d.getDay() + 6));
+
+                if (hasMoment) {
+                    return moment(sunday).format(format || this._o.format).concat(' - ', moment(saturday).format(format || this._o.format));
+                } else if (this._o.showTime) {
+                    return sunday.toString().concat(' - ', saturday.toString());
+                } else {
+                    return sunday.toDateString().concat(' - ', saturday.toDateString());
+                }
+            } else {
+                if (!isDate(this._d)) {
+                    return '';
+                } else if (hasMoment) {
+                    return moment(this._d).format(format || this._o.format);
+                } else if (this._o.showTime) {
+                    return this._d.toString();
+                } else {
+                    return this._d.toDateString();
+                }
+            }
         },
 
         /**
@@ -1212,6 +1233,7 @@
                 after -= 7;
             }
             cells += 7 - after;
+            debugger;
             var isWeekSelected = false;
 
             // Ensure we only compare date portion when deciding to show a date in picker
