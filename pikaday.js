@@ -815,11 +815,11 @@
                 let saturday = new Date(this._d.setDate(this._d.getDate() - this._d.getDay() + 6));
 
                 if (hasMoment) {
-                    return moment(sunday).format(format || this._o.format).concat(' - ', moment(saturday).format(format || this._o.format));
+                    return moment(sunday).format(format || this._o.format) + ' - ' + moment(saturday).format(format || this._o.format);
                 } else if (this._o.showTime) {
-                    return sunday.toString().concat(' - ', saturday.toString());
+                    return sunday.toString() + ' - ' + saturday.toString();
                 } else {
-                    return sunday.toDateString().concat(' - ', saturday.toDateString());
+                    return sunday.toDateString() + ' - ' + saturday.toDateString();
                 }
             } else {
                 if (!isDate(this._d)) {
