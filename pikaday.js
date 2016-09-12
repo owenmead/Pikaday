@@ -811,16 +811,16 @@
         toString: function(format)
         {
             if (this._o.pickWholeWeek && isDate(this._d)) {
-                let sunday = new Date(this._d.setDate(this._d.getDate() - this._d.getDay()));
-                let saturday = new Date(this._d.setDate(this._d.getDate() - this._d.getDay() + 6));
-
-                if (hasMoment) {
-                    return moment(sunday).format(format || this._o.format) + ' - ' + moment(saturday).format(format || this._o.format);
-                } else if (this._o.showTime) {
-                    return sunday.toString() + ' - ' + saturday.toString();
-                } else {
-                    return sunday.toDateString() + ' - ' + saturday.toDateString();
-                }
+                // let sunday = new Date(this._d.setDate(this._d.getDate() - this._d.getDay()));
+                // let saturday = new Date(this._d.setDate(this._d.getDate() - this._d.getDay() + 6));
+                //
+                // if (hasMoment) {
+                //     return moment(sunday).format(format || this._o.format) + ' - ' + moment(saturday).format(format || this._o.format);
+                // } else if (this._o.showTime) {
+                //     return sunday.toString() + ' - ' + saturday.toString();
+                // } else {
+                //     return sunday.toDateString() + ' - ' + saturday.toDateString();
+                // }
             } else {
                 if (!isDate(this._d)) {
                     return '';
