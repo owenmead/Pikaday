@@ -261,6 +261,9 @@
         // option to prevent calendar from auto-closing after date is selected
         autoClose: true,
 
+        // option to prevent calendar from auto-closing after date is selected
+        autoClose: true,
+
         // when numberOfMonths is used, this will help you to choose where the main calendar will be (default `left`, can be set to `right`)
         // only used for the first display or when a selected date is not visible
         mainCalendar: 'left',
