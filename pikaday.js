@@ -225,6 +225,9 @@
         // show week numbers at head of row
         showWeekNumber: false,
 
+        // activate week picker mode
+        pickWholeWeek: false,
+
         // used internally (don't config outside)
         minYear: 0,
         maxYear: 9999,
@@ -347,9 +350,9 @@
         return '<td class="pika-week">' + weekNum + '</td>';
     },
 
-    renderRow = function(days, isRTL)
+    renderRow = function(days, isRTL, pickWholeWeek, isRowSelected)
     {
-        return '<tr>' + (isRTL ? days.reverse() : days).join('') + '</tr>';
+        return '<tr class="pika-row' + (pickWholeWeek ? ' pick-whole-week' : '') + (isRowSelected ? ' is-selected' : '') + '">' + (isRTL ? days.reverse() : days).join('') + '</tr>';
     },
 
     renderBody = function(rows)
@@ -808,7 +811,28 @@
          */
         toString: function(format)
         {
-            return !isDate(this._d) ? '' : hasMoment ? moment(this._d).format(format || this._o.format) : this._o.showTime ? this._d.toString() : this._d.toDateString();
+            if (this._o.pickWholeWeek && isDate(this._d)) {
+                let sunday = new Date(this._d.setDate(this._d.getDate() - this._d.getDay()));
+                let saturday = new Date(this._d.setDate(this._d.getDate() - this._d.getDay() + 6));
+                //
+                // if (hasMoment) {
+                //     return moment(sunday).format(format || this._o.format) + ' - ' + moment(saturday).format(format || this._o.format);
+                // } else if (this._o.showTime) {
+                //     return sunday.toString() + ' - ' + saturday.toString();
+                // } else {
+                //     return sunday.toDateString() + ' - ' + saturday.toDateString();
+                // }
+            } else {
+                if (!isDate(this._d)) {
+                    return '';
+                } else if (hasMoment) {
+                    return moment(this._d).format(format || this._o.format);
+                } else if (this._o.showTime) {
+                    return this._d.toString();
+                } else {
+                    return this._d.toDateString();
+                }
+            }
         },
 
         /**
@@ -1213,6 +1237,8 @@
                 after -= 7;
             }
             cells += 7 - after;
+            debugger;
+            var isWeekSelected = false;
 
             // Ensure we only compare date portion when deciding to show a date in picker
             var minDate_date = opts.minDate ? new Date(opts.minDate.getFullYear(), opts.minDate.getMonth(), opts.minDate.getDate()) : null;
@@ -1260,6 +1286,9 @@
                         isInRange: isInRange,
                         showDaysInNextAndPreviousMonths: opts.showDaysInNextAndPreviousMonths
                     };
+                if (opts.pickWholeWeek && isSelected) {
+                    isWeekSelected = true;
+                }
 
                 row.push(renderDay(dayConfig));
 
@@ -1267,9 +1296,10 @@
                     if (opts.showWeekNumber) {
                         row.unshift(renderWeek(i - before, month, year));
                     }
-                    data.push(renderRow(row, opts.isRTL));
+                    data.push(renderRow(row, opts.isRTL, opts.pickWholeWeek, isWeekSelected));
                     row = [];
                     r = 0;
+                    isWeekSelected = false;
                 }
             }
             return renderTable(opts, data, randId);
