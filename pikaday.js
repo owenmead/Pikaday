@@ -855,13 +855,13 @@
             if (seconds) {
                 this._d.setSeconds(seconds);
             }
-            this.setDate(this._d);
+            this.setDate(this._d, false, true);
         },
 
         /**
          * set the current selection
          */
-        setDate: function(date, preventOnSelect)
+        setDate: function(date, preventOnSelect, fromTime)
         {
             if (!date) {
                 this._d = null;
@@ -896,8 +896,9 @@
             } else if (!this._o.showTime) {
                 setToStartOfDay(this._d);
             }
-
-            this.gotoDate(this._d);
+            if (!fromTime) {
+                this.gotoDate(this._d);
+            }
 
             if (this._o.field) {
                 this._o.field.value = this.toString();
@@ -1126,7 +1127,7 @@
             if (typeof this._o.onDraw === 'function') {
                 this._o.onDraw(this);
             }
-            
+
             if (opts.bound) {
                 // let the screen reader user know to use arrow keys
                 opts.field.setAttribute('aria-label', 'Use the arrow keys to pick a date');
